@@ -1,0 +1,138 @@
+---
+title: "viz_part_01"
+author: "Ayako Sekiya"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Let's import data
+```{r}
+library(tidyverse)
+library(ggridges)
+```
+
+This code from the course website gets the data from specific file in NOAA. 
+
+```{r import}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+Let's make a sctterplot
+`aes` allows you to assign variables to x and y axis. `geom_point` allows you to add points to the scatterplot.
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax))+
+geom_point()
+```
+
+Let's make the scatterplot a bit different. 
+added `drop_na` to remove na and remove error. 
+`filter` allows to chose specific outputs
+
+```{r}
+weather_df %>%
+  drop_na() %>%
+  filter(name=="CentralPark_NY") %>%
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point()
+```
+
+Let's make the same scatterplot a bit different. 
+
+```{r}
+weather_scatterplot=
+  weather_df %>%
+  drop_na() %>%
+  ggplot(aes(x = tmin, y = tmax))
+
+weather_scatterplot+
+  geom_point()
+```
+
+## Let's fancy this up a bit!
+
+We add color to distinguish which plot is which using `color`. 
+
+```{r color}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name))
+```
+
+```{r line}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5) +
+  geom_smooth(se = FALSE)
+```
+
+the following adds lines to every plot.
+
+```{r line}
+ggplot(weather_df, aes(x = tmin, y = tmax, color=name)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+gives transparent circles and `se` can be set to false to remove wanrings. 
+
+```{r line}
+ggplot(weather_df, aes(x = tmin, y = tmax, color=name)) + 
+  geom_point(alpha=0.3) +
+  geom_smooth(se= FALSE)
+```
+
+make separate panels with `facet_grid`.
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
+```
+
+this reorganizes to show rows. 
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(name ~ .)
+```
+
+```{r}
+ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point(aes(size = prcp), alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ name)
+```
+
+```{r}
+ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+  geom_smooth(se = FALSE) 
+```
+
+```{r}
+ggplot(weather_df, aes(x = tmax, y = tmin)) + 
+  geom_hex()
+```
+
+```{r}
+
+```
+
