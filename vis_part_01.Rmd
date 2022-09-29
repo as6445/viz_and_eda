@@ -117,22 +117,57 @@ ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) +
 
 ```{r}
 ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
-  geom_point(aes(size = prcp), alpha = .5) +
+  geom_point(aes(size = prcp), alpha = .3) +
   geom_smooth(se = FALSE) + 
   facet_grid(. ~ name)
 ```
 
-```{r}
-ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
-  geom_smooth(se = FALSE) 
+## some quick stuff
+
+weather_df %>%
+  mutate(farenheit= INSERT CONVERSION HERE)
+
+```{r hexagons}
+ggplot(weather_df, aes(x = date, y = tmax1)) + 
+  geom_hex() 
 ```
 
-```{r}
-ggplot(weather_df, aes(x = tmax, y = tmin)) + 
-  geom_hex()
+## univariate plots...
+
+Histograms, densityplots, boxplots, violins...
+
+```{r histogram}
+ggplot(weather_df, aes(x = tmax)) + 
+  geom_histogram()
 ```
 
-```{r}
+`fill` what do you fill bars with?
+`dodge` allows you to unoverlap
 
+```{r colors}
+ggplot(weather_df, aes(x = tmax, fill = name)) + 
+  geom_histogram(position = "dodge", binwidth = 2)
+```
+
+Density plots!
+
+```{r density plots}
+ggplot(weather_df, aes(x = tmax, fill = name)) + 
+  geom_density(alpha = .3, adjust = .5, color = "blue")
+```
+
+Boxplots!
+
+```{r boxplots}
+ggplot(weather_df, aes(x = name, y = tmax, fill=name))+ 
+  geom_boxplot()
+```
+
+Violin plots!--> good with comparing 20,30 stations, when have fewer plots to compare. 
+
+```{r violinplots}
+ggplot(weather_df, aes(x = name, y = tmax)) + 
+  geom_violin(aes(fill = name), alpha = .5) + 
+  stat_summary(fun = "median", color = "blue")
 ```
 
