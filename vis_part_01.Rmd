@@ -171,3 +171,36 @@ ggplot(weather_df, aes(x = name, y = tmax)) +
   stat_summary(fun = "median", color = "blue")
 ```
 
+Ridgeplots!
+
+```{r ridgeplots}
+ggplot(weather_df, aes(x = tmax, y = name)) + 
+  geom_density_ridges(scale = .85)
+```
+
+## saving and editing files
+
+```{r}
+weather_scatterplot=
+  weather_df %>%
+  ggplot(aes(x=date, y=tmax, color= name)) +
+  geom_point(aes(size= prcp), alpha=0.3)+
+  geom_smooth(se=FALSE)+
+  facet_grid(. ~ name)
+
+ggsave("results/weather_scatterplot.pdf", weather_plot, width = 8, height = 5)
+```
+
+
+```{r}
+weather_plot = ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name), alpha = .5) 
+
+ggsave("results/weather_plot.pdf", weather_plot, width = 8, height = 5)
+```
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name))
+```
+
